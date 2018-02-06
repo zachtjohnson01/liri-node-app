@@ -55,9 +55,15 @@ function collectTweets(handle) {
 };
 
 function returnSong(song) {
+    var Track = null;
+    if (!song){
+        Track = 'The Sign - Ace of Base'
+    } else {
+        Track = song
+    };
     spotify.search({
         type: 'track',
-        query: song,
+        query: Track,
         limit: 10
     }, function(err,data) {
         if (err) {
@@ -80,7 +86,7 @@ function returnMovie(movieTitle) {
         Title = 'Mr. Nobody'
     } else {
         Title = movieTitle
-    }
+    };
     request('http://www.omdbapi.com/?apikey=trilogy&t='+ Title, function (err, response, body) {
         if (err) {
             return console.log('Error occurred: ' + err);
