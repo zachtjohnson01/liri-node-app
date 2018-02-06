@@ -4,6 +4,7 @@ var keys = require('./keys.js');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
 var request = require('request');
+var fs = require('fs');
 // var movieTitle;
 
 var spotify = new Spotify(keys.spotify);
@@ -15,18 +16,16 @@ var userRequestItem = process.argv.slice(3).join(' ');
 
 switch(userRequest) {
     case 'my-tweets':
-        console.log('Will show last 20 tweets');
         collectTweets(userRequestItem);
         break;
     case 'spotify-this-song':
-        console.log('Will show song info');
         returnSong(userRequestItem);
         break;
     case 'movie-this':
-        console.log('Will show movie info')
         returnMovie(userRequestItem);
         break;
     case 'do-what-it-says':
+        doWhatItSays();
         break;
     case 'options':
         console.log('LIRI Arguments:')
@@ -105,6 +104,34 @@ function returnMovie(movieTitle) {
             console.log(`Plot: ${movie['Plot']}`);
             console.log(`Actors: ${movie['Actors']}`);
         }
-});
+    })
+};
+
+function doWhatItSays() {
+    fs.readFile('./random.txt', 'utf8', function(err, contents) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        } else {
+            var command = contents.slice(0,contents.indexOf(','));
+            var params = contents.slice(contents.indexOf(',') + 1);
+            params = params.replace(/"/g, '').split(" ");
+            switch(command) {
+                case 'my-tweets':
+                    console.log('Will show last 20 tweets');
+                    collectTweets(params);
+                    break;
+                case 'spotify-this-song':
+                    console.log('Will show song info');
+                    returnSong(params);
+                    break;
+                case 'movie-this':
+                    console.log('Will show movie info')
+                    returnMovie(params);
+                    break;
+                default: 
+                    console.log("I'm sorry, I didn't get that")
+        };
+        };
+    })
 }
 
